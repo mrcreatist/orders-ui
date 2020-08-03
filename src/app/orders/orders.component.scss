@@ -1,0 +1,15 @@
+.order-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+
+    .item-table {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: fit-content;
+    }
+
+    .order-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}

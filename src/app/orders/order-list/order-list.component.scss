@@ -1,0 +1,12 @@
+mat-card {
+    border: 1px solid rgba(0,0,0,.12);
+    width: auto;
+    margin: 0.5rem;
+    position: relative;
+    height: 8rem;
+
+    mat-card-content {
+        position: absolute;
+        bottom: 1rem;
+    }
+}
