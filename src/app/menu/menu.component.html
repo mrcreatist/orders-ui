@@ -6,8 +6,8 @@
             <mat-label>Pick One</mat-label>
             <input type="text" matInput [formControl]="item" [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name">
-                    {{option.name}}
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option.item">
+                    {{option.item}}
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>

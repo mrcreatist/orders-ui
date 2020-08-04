@@ -1,44 +1,47 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
+import * as socket from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SocketService {
 
-  menu: any = [
-    {
-      "id": 100,
-      "name": "Coffee"
-    },
-    {
-      "id": 101,
-      "name": "Tea"
-    }
-  ];
+  menu: any = [];
 
   constructor(
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) { }
 
-  getMenu() {
-    return this.menu;
+  getMenu(): Observable<any> {
+    return this.http.get(`${environment.url}/menu`);
   }
 
-  register(first: string, last: string, code: number) {
-    localStorage.setItem('user', JSON.stringify({
+  register(first: string, last: string, code: number): Observable<any> {
+    return this.http.post(`${environment.url}/add-user`, JSON.stringify({
       first_name: first,
       last_name: last,
-      emp_code: code,
-      uuid: '123123'
-    }));
+      emp_code: code
+    }))
   }
 
   isUser() {
     return localStorage.getItem('user');
   }
 
-  order(item: number, quantity: number) {
-    console.log(quantity, item);
+  placeOrder(data: any): Observable<any> {
+    return this.http.post(`${environment.url}/place-order`, data);
+  }
+
+  openSocketConnection() {
+    console.log('opening socket connection');
+  }
+
+  getActiveOrders() {
+    console.log('getActiveOrders()');
   }
 }

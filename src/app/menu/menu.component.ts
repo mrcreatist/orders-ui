@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { SocketService } from '../socket.service';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { OrderPlacedComponent } from './order-placed/order-placed.component';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-menu',
@@ -14,7 +15,7 @@ import { OrderPlacedComponent } from './order-placed/order-placed.component';
 })
 export class MenuComponent implements OnInit {
 
-  menu: any;
+  menu: any = [];
   item = new FormControl();
   quantity = new FormControl();
   filteredOptions: Observable<string[]>;
@@ -24,32 +25,35 @@ export class MenuComponent implements OnInit {
     private dialog: MatDialog,
     private socket: SocketService
   ) {
-    if (!this.socket.isUser()) {
-      this.router.navigateByUrl('register');
-    } else {
-      this.menu = this.socket.getMenu();
-    }
   }
 
   ngOnInit(): void {
-    this.filteredOptions = this.item.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this._filter(value))
-      );
+    if (!this.socket.isUser()) {
+      this.router.navigateByUrl('register');
+    } else {
+      this.menu = JSON.parse(localStorage.getItem('menu'));
+    }
+
+    this.filteredOptions = this.item.valueChanges.pipe(startWith(''), map(value => this.menu.length ? this._filter(value) : null));
   }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.menu.filter((option: any) => option.name.toLowerCase().includes(filterValue));
+    return this.menu.filter((option: any) => option.item.toLowerCase().includes(filterValue));
   }
 
   order() {
-    this.socket.order(this.menu.filter((x: any) => x.name === this.item.value)[0].id, parseInt(this.quantity.value));
-    this.dialog.open(OrderPlacedComponent, {
-      data: {
-        order_id: 123123
-      }
+    console.log(this.menu);
+    this.socket.placeOrder({
+      item: this.menu.filter((x: any) => x.item.toLowerCase() === this.item.value.toLowerCase())[0].id,
+      quantity: parseInt(this.quantity.value),
+      user_id: JSON.parse(localStorage.getItem('user')).id,
+    }).subscribe((res: any) => {
+      this.dialog.open(OrderPlacedComponent, {
+        data: {
+          order_id: res.order_id
+        }
+      });
     });
   }
 

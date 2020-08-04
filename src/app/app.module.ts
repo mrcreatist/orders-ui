@@ -13,6 +13,8 @@ import { NewOrderComponent } from './orders/new-order/new-order.component';
 import { OrderListComponent } from './orders/order-list/order-list.component';
 import { OrderTableComponent } from './orders/order-table/order-table.component';
 import { OrderPlacedComponent } from './menu/order-placed/order-placed.component';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'; 4
+import { NoopInterceptor } from './noop-interceptor';
 
 @NgModule({
   declarations: [
@@ -30,9 +32,12 @@ import { OrderPlacedComponent } from './menu/order-placed/order-placed.component
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: NoopInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

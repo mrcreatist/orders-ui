@@ -22,8 +22,10 @@ export class RegisterComponent implements OnInit {
   }
 
   register(first: string, last: string, code: number) {
-    this.socket.register(first, last, code);
-    this.router.navigateByUrl('/');
+    this.socket.register(first, last, code).subscribe((res: any) => {
+      localStorage.setItem('user', JSON.stringify(res));
+      this.router.navigateByUrl('/');
+    });
   }
 
 }

@@ -16,7 +16,9 @@ export class OrdersComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private socket: SocketService
-  ) { }
+  ) {
+    this.socket.openSocketConnection();
+  }
 
   ngOnInit(): void {
     // this.openDialog();
