@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { OrderPlacedComponent } from './order-placed/order-placed.component';
 
 @Component({
   selector: 'app-menu',
@@ -19,6 +21,7 @@ export class MenuComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private dialog: MatDialog,
     private socket: SocketService
   ) {
     if (!this.socket.isUser()) {
@@ -42,7 +45,12 @@ export class MenuComponent implements OnInit {
   }
 
   order() {
-    this.socket.order(this.menu.filter((x: any) => x.name === this.item.value)[0].id, parseInt(this.quantity.value))
+    this.socket.order(this.menu.filter((x: any) => x.name === this.item.value)[0].id, parseInt(this.quantity.value));
+    this.dialog.open(OrderPlacedComponent, {
+      data: {
+        order_id: 123123
+      }
+    });
   }
 
 }

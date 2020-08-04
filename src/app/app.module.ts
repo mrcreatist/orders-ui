@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NewOrderComponent } from './orders/new-order/new-order.component';
 import { OrderListComponent } from './orders/order-list/order-list.component';
 import { OrderTableComponent } from './orders/order-table/order-table.component';
+import { OrderPlacedComponent } from './menu/order-placed/order-placed.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { OrderTableComponent } from './orders/order-table/order-table.component'
     MenuComponent,
     NewOrderComponent,
     OrderListComponent,
-    OrderTableComponent
+    OrderTableComponent,
+    OrderPlacedComponent
   ],
   imports: [
     BrowserModule,
