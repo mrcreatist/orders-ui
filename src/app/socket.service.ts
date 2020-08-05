@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
-import * as socket from 'socket.io-client';
+import { Observable, BehaviorSubject } from 'rxjs';
+import * as socketIO from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root'
@@ -11,11 +11,22 @@ import * as socket from 'socket.io-client';
 export class SocketService {
 
   menu: any = [];
+  socket: any;
+
+  private orderSocketEvent = new BehaviorSubject(null);
 
   constructor(
     private router: Router,
     private http: HttpClient
   ) { }
+
+  getOrderSocketEvent(): Observable<any> {
+    return this.orderSocketEvent;
+  }
+
+  getActiveOrders() {
+    this.socket.emit('get-orders');
+  }
 
   getMenu(): Observable<any> {
     return this.http.get(`${environment.url}/menu`);
@@ -37,11 +48,12 @@ export class SocketService {
     return this.http.post(`${environment.url}/place-order`, data);
   }
 
-  openSocketConnection() {
-    console.log('opening socket connection');
+  completeOrder(user: any) {
+    this.socket.emit('order-complete', { user_id: user });
   }
 
-  getActiveOrders() {
-    console.log('getActiveOrders()');
+  openSocketConnection() {
+    this.socket = socketIO(`${environment.socketURL}`);
+    this.socket.on('all-orders', (data: any) => this.orderSocketEvent.next(data));
   }
 }

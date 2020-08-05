@@ -43,17 +43,14 @@ export class MenuComponent implements OnInit {
   }
 
   order() {
-    console.log(this.menu);
     this.socket.placeOrder({
       item: this.menu.filter((x: any) => x.item.toLowerCase() === this.item.value.toLowerCase())[0].id,
       quantity: parseInt(this.quantity.value),
       user_id: JSON.parse(localStorage.getItem('user')).id,
     }).subscribe((res: any) => {
-      this.dialog.open(OrderPlacedComponent, {
-        data: {
-          order_id: res.order_id
-        }
-      });
+      if (res.message === 'order placed') {
+        this.dialog.open(OrderPlacedComponent);
+      }
     });
   }
 

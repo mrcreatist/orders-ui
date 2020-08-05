@@ -13,6 +13,8 @@ export class OrdersComponent implements OnInit {
   orders: any = [];
   items: any = [];
 
+  interval: any;
+
   constructor(
     public dialog: MatDialog,
     private socket: SocketService
@@ -21,71 +23,16 @@ export class OrdersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.openDialog();
-    this.orders = [
-      {
-        name: 'Abhishek Verma',
-        active: true,
-        order_id: '123123',
-        data: [
-          {
-            item: 'Coffee',
-            quantity: 10
-          },
-          {
-            item: 'Tea',
-            quantity: 11
-          }
-        ]
-      },
-      {
-        name: 'Simran Verma',
-        active: true,
-        order_id: '123123',
-        data: [
-          {
-            item: 'Coffee',
-            quantity: 10
-          },
-          {
-            item: 'Tea',
-            quantity: 11
-          }
-        ]
-      },
-      {
-        name: 'Pawan Verma',
-        active: true,
-        order_id: '123123',
-        data: [
-          {
-            item: 'Coffee',
-            quantity: 10
-          },
-          {
-            item: 'Tea',
-            quantity: 11
-          }
-        ]
-      },
-      {
-        name: 'Sapna Verma',
-        active: true,
-        order_id: '123123',
-        data: [
-          {
-            item: 'Coffee',
-            quantity: 10
-          },
-          {
-            item: 'Tea',
-            quantity: 11
-          }
-        ]
-      }
-    ];
+    this.interval = setInterval(() => this.socket.getActiveOrders(), 2000);
 
-    this.activeItems();
+    this.socket.getOrderSocketEvent().subscribe((res: any) => {
+      if (res) {
+        this.orders = res.order;
+        this.activeItems();
+      }
+    });
+
+    // this.openDialog();
   }
 
   activeItems() {
@@ -123,6 +70,8 @@ export class OrdersComponent implements OnInit {
     item.active = false;
     this.orders.push(item);
     this.activeItems();
+
+    this.socket.completeOrder(event.data.user_id);
   }
 
 }
