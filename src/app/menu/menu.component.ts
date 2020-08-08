@@ -19,6 +19,7 @@ export class MenuComponent implements OnInit {
   item = new FormControl();
   quantity = new FormControl();
   filteredOptions: Observable<string[]>;
+  counter: number = 0;
 
   constructor(
     private router: Router,
@@ -52,6 +53,13 @@ export class MenuComponent implements OnInit {
         this.dialog.open(OrderPlacedComponent);
       }
     });
+  }
+
+  goToBoard() {
+    this.counter++;
+    if (this.counter >= 5) {
+      this.router.navigateByUrl('/board');
+    }
   }
 
 }

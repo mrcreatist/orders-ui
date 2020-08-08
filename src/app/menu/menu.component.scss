@@ -1,4 +1,8 @@
 mat-card {
     width: min-content;
     margin: auto;
+
+    mat-card-title {
+        user-select: none;
+    }
 }
